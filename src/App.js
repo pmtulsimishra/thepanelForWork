@@ -1,5 +1,6 @@
 
 import { useState, useRef, useCallback } from "react";
+import "./App.css";
 
 function trimTrailingSlash(value) {
   return String(value || "").replace(/\/+$/, "");
@@ -537,244 +538,268 @@ export default function ThePanel() {
   const activePersona = personas.find(p => p.id === activeTab);
   const PRESET_COLORS = ["#c0392b","#16a085","#7d3c98","#d4860a","#2471a3","#1e8449","#884ea0","#616a6b"];
 
-  const inputStyle = {
-    background: "#111", border: "1px solid #252525", borderRadius: "3px",
-    color: "#ccc", padding: "8px 10px", fontSize: "12px", fontFamily: "monospace",
-    outline: "none", width: "100%", boxSizing: "border-box",
-  };
-
   return (
-    <div style={{ minHeight: "100vh", background: "#0f0f0f", color: "#e0e0e0", fontFamily: "'Georgia', serif", display: "flex", flexDirection: "column" }}>
-
+    <div className="app-container">
       {/* Header */}
-      <div style={{ borderBottom: "1px solid #1c1c1c", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 20, background: "#0f0f0f" }}>
-        <div>
-          <div style={{ fontSize: "9px", letterSpacing: "4px", color: "#3a3a3a", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "3px" }}>Document Review Suite</div>
-          <h1 style={{ margin: 0, fontSize: "20px", fontWeight: "400", color: "#f0f0f0", letterSpacing: "-0.3px" }}>The Panel</h1>
+      <div className="app-header">
+        <div className="app-header-title">
+          <div className="app-header-subtitle">Document Review Suite</div>
+          <h1>The Panel</h1>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          {inferring && <span style={{ fontSize: "10px", color: "#444", fontFamily: "monospace", animation: "pulse 1.5s infinite" }}>inferring context…</span>}
+        <div className="app-header-controls">
+          {inferring && <span className="status-indicator">inferring context…</span>}
           {context && !inferring && (
-            <button onClick={() => setShowContext(v => !v)} style={{ background: "none", border: "1px solid #222", borderRadius: "3px", color: "#555", padding: "5px 12px", fontSize: "10px", cursor: "pointer", fontFamily: "monospace", letterSpacing: "1px" }}>
+            <button 
+              onClick={() => setShowContext(v => !v)} 
+              className="btn btn-secondary"
+              style={{ padding: "6px 12px", fontSize: "11px" }}
+            >
               {showContext ? "hide context" : "view context"}
             </button>
           )}
-          <span style={{ fontSize: "10px", color: "#2a2a2a", fontFamily: "monospace" }}>{personas.length} reviewers</span>
+          <span className="status-indicator">{personas.length} reviewers</span>
         </div>
       </div>
 
       {/* Context Bar */}
       {showContext && context && (
-        <div style={{ background: "#111", borderBottom: "1px solid #1c1c1c", padding: "14px 28px", display: "flex", gap: "28px", flexWrap: "wrap" }}>
+        <div className="context-bar">
           {Object.entries(context).map(([k, v]) => v && (
-            <div key={k}>
-              <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#3a3a3a", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "3px" }}>{k}</div>
-              <div style={{ fontSize: "12px", color: "#888", maxWidth: "220px", lineHeight: "1.4" }}>{v}</div>
+            <div key={k} className="context-item">
+              <div className="context-label">{k}</div>
+              <div className="context-value">{v}</div>
             </div>
           ))}
         </div>
       )}
 
+      {/* Error Notice */}
       {errorMessage && (
-        <div style={{ background: "#2a1515", borderBottom: "1px solid #472424", color: "#f2b6b6", padding: "10px 28px", fontSize: "11px", fontFamily: "monospace" }}>
+        <div className="notice-bar notice-error">
           {errorMessage}
         </div>
       )}
 
+      {/* Mode Notice */}
       {modeNotice && (
-        <div style={{ background: "#1a1d28", borderBottom: "1px solid #2d3552", color: "#b7c7ff", padding: "10px 28px", fontSize: "11px", fontFamily: "monospace" }}>
+        <div className="notice-bar notice-info">
           {modeNotice}
         </div>
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", flex: 1 }}>
-
-        {/* Left Column */}
-        <div style={{ borderRight: "1px solid #1c1c1c", display: "flex", flexDirection: "column" }}>
-
-          {/* Document input */}
-          <div style={{ padding: "20px", borderBottom: "1px solid #1c1c1c" }}>
-            <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#3a3a3a", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "10px" }}>Document</div>
+      <div className="main-layout">
+        {/* Left Sidebar */}
+        <div className="sidebar">
+          {/* Document input section */}
+          <div className="sidebar-section">
+            <div className="sidebar-label">Document</div>
 
             <div
               onDragOver={e => { e.preventDefault(); setDragging(true); }}
               onDragLeave={() => setDragging(false)}
               onDrop={e => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
               onClick={() => fileInputRef.current?.click()}
-              style={{
-                border: `1px dashed ${dragging ? "#444" : "#222"}`,
-                borderRadius: "3px", padding: "12px", marginBottom: "8px",
-                cursor: "pointer", textAlign: "center", background: dragging ? "#141414" : "transparent",
-                transition: "all 0.15s",
-              }}
+              className={`file-drop-zone ${dragging ? "dragging" : ""}`}
             >
-              <div style={{ fontSize: "16px", marginBottom: "3px" }}>📎</div>
-              <div style={{ fontSize: "10px", color: fileName ? "#777" : "#3a3a3a", fontFamily: "monospace" }}>
+              <div className="file-drop-zone-icon">📎</div>
+              <div className="file-drop-zone-text">
                 {fileName || "drop file or click to upload"}
               </div>
-              <div style={{ fontSize: "9px", color: "#2a2a2a", marginTop: "2px", fontFamily: "monospace" }}>pdf · txt · md</div>
+              <div className="file-drop-zone-hint">pdf · txt · md</div>
             </div>
-            <input ref={fileInputRef} type="file" accept=".txt,.md,.pdf,.csv" style={{ display: "none" }} onChange={e => handleFile(e.target.files[0])} />
+            <input 
+              ref={fileInputRef} 
+              type="file" 
+              accept=".txt,.md,.pdf,.csv" 
+              className="file-input" 
+              onChange={e => handleFile(e.target.files[0])} 
+            />
 
             <textarea
               value={docText}
               onChange={e => handleDocChange(e.target.value)}
               placeholder="…or paste text here"
-              style={{ ...inputStyle, minHeight: "120px", resize: "vertical", lineHeight: "1.6", fontSize: "12px", fontFamily: "inherit" }}
+              className="text-input document-textarea"
             />
             {hasDoc && (
-              <button onClick={() => { setDocText(""); setFileName(null); setContext(null); contextRef.current = null; setReviews({}); setActiveTab(null); setErrorMessage(""); setModeNotice(""); }}
-                style={{ background: "none", border: "none", color: "#2a2a2a", cursor: "pointer", fontSize: "10px", fontFamily: "monospace", marginTop: "4px", padding: 0 }}>
+              <button 
+                onClick={() => { setDocText(""); setFileName(null); setContext(null); contextRef.current = null; setReviews({}); setActiveTab(null); setErrorMessage(""); setModeNotice(""); }}
+                className="btn-clear"
+              >
                 clear
               </button>
             )}
           </div>
 
-          {/* Run All */}
-          <div style={{ padding: "14px 20px", borderBottom: "1px solid #1c1c1c" }}>
+          {/* Run All Button */}
+          <div className="sidebar-section" style={{ padding: "14px 20px", borderBottom: "1px solid #222" }}>
             <button
               onClick={reviewAll}
               disabled={!hasDoc || runningAll}
-              style={{
-                width: "100%", padding: "10px", borderRadius: "3px", border: "none",
-                background: hasDoc && !runningAll ? "#efefef" : "#181818",
-                color: hasDoc && !runningAll ? "#0f0f0f" : "#2a2a2a",
-                fontSize: "11px", fontFamily: "monospace", cursor: hasDoc && !runningAll ? "pointer" : "default",
-                letterSpacing: "1px", transition: "all 0.15s",
-              }}
+              className="btn btn-primary"
+              style={{ fontSize: "11px" }}
             >
               {runningAll ? "reviewing…" : "run all reviewers →"}
             </button>
           </div>
 
           {/* Personas list */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "14px 20px" }}>
-            <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#3a3a3a", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "10px" }}>Reviewers</div>
+          <div className="sidebar-section">
+            <div className="sidebar-label">Reviewers</div>
 
-            {personas.map(p => (
-              <div key={p.id}
-                onClick={() => { if (reviews[p.id]) setActiveTab(p.id); }}
-                style={{
-                  marginBottom: "6px", padding: "10px 12px", borderRadius: "3px",
-                  border: `1px solid ${activeTab === p.id ? p.color + "55" : "#1c1c1c"}`,
-                  background: activeTab === p.id ? p.color + "10" : "#111",
-                  cursor: reviews[p.id] ? "pointer" : "default",
-                  transition: "all 0.15s",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span style={{ fontSize: "15px" }}>{p.emoji}</span>
-                    <span style={{ fontSize: "12px", color: "#ccc" }}>{p.name}</span>
+            <div className="personas-list">
+              {personas.map(p => (
+                <div 
+                  key={p.id}
+                  onClick={() => { if (reviews[p.id]) setActiveTab(p.id); }}
+                  className={`persona-item ${activeTab === p.id ? "active" : ""}`}
+                  style={{
+                    borderColor: activeTab === p.id ? p.color + "55" : undefined,
+                    background: activeTab === p.id ? p.color + "10" : undefined,
+                    cursor: reviews[p.id] ? "pointer" : "default",
+                  }}
+                >
+                  <div className="persona-info">
+                    <span className="persona-emoji">{p.emoji}</span>
+                    <span className="persona-name">{p.name}</span>
                   </div>
-                  <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                    {loading[p.id] && <span style={{ fontSize: "9px", color: "#444", fontFamily: "monospace", animation: "pulse 1.5s infinite" }}>…</span>}
-                    {reviews[p.id] && !loading[p.id] && <span style={{ fontSize: "9px", color: p.color, fontFamily: "monospace" }}>✓</span>}
-                    <button onClick={e => { e.stopPropagation(); reviewOne(p); }}
+                  <div className="persona-actions">
+                    {loading[p.id] && <span className="status-dot">…</span>}
+                    {reviews[p.id] && !loading[p.id] && <span className="status-dot" style={{ color: p.color }}>✓</span>}
+                    <button 
+                      onClick={e => { e.stopPropagation(); reviewOne(p); }}
                       disabled={!hasDoc || !!loading[p.id]}
-                      style={{ background: "none", border: "none", color: hasDoc ? "#555" : "#222", cursor: hasDoc ? "pointer" : "default", fontSize: "10px", fontFamily: "monospace", padding: "0 2px" }}>
+                      className="btn-icon"
+                    >
                       run
                     </button>
-                    <button onClick={e => { e.stopPropagation(); startEdit(p); }}
-                      style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: "10px", fontFamily: "monospace", padding: "0 2px" }}>
+                    <button 
+                      onClick={e => { e.stopPropagation(); startEdit(p); }}
+                      className="btn-icon"
+                    >
                       edit
                     </button>
-                    <button onClick={e => { e.stopPropagation(); deletePersona(p.id); }}
-                      style={{ background: "none", border: "none", color: "#2a2a2a", cursor: "pointer", fontSize: "10px", fontFamily: "monospace", padding: "0 2px" }}>
+                    <button 
+                      onClick={e => { e.stopPropagation(); deletePersona(p.id); }}
+                      className="btn-icon"
+                    >
                       ✕
                     </button>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
             {!addingNew ? (
-              <button onClick={() => setAddingNew(true)}
-                style={{ width: "100%", marginTop: "6px", padding: "8px", background: "none", border: "1px dashed #1c1c1c", borderRadius: "3px", color: "#333", cursor: "pointer", fontSize: "10px", fontFamily: "monospace", letterSpacing: "1px" }}>
+              <button 
+                onClick={() => setAddingNew(true)}
+                className="btn-add-reviewer"
+              >
                 + add reviewer
               </button>
             ) : (
-              <div style={{ marginTop: "8px", padding: "12px", background: "#111", border: "1px solid #1c1c1c", borderRadius: "3px" }}>
-                <div style={{ display: "flex", gap: "6px", marginBottom: "6px" }}>
-                  <input value={newForm.emoji} onChange={e => setNewForm(f => ({ ...f, emoji: e.target.value }))} style={{ ...inputStyle, width: "40px", textAlign: "center" }} placeholder="🤖" />
-                  <input value={newForm.name} onChange={e => setNewForm(f => ({ ...f, name: e.target.value }))} style={{ ...inputStyle, flex: 1 }} placeholder="Reviewer name" />
+              <div className="add-persona-form">
+                <div className="form-row">
+                  <input 
+                    value={newForm.emoji} 
+                    onChange={e => setNewForm(f => ({ ...f, emoji: e.target.value }))} 
+                    className="text-input form-input"
+                    style={{ width: "50px", textAlign: "center" }}
+                    placeholder="🤖" 
+                  />
+                  <input 
+                    value={newForm.name} 
+                    onChange={e => setNewForm(f => ({ ...f, name: e.target.value }))} 
+                    className="text-input form-input"
+                    placeholder="Reviewer name" 
+                  />
                 </div>
-                <div style={{ display: "flex", gap: "4px", marginBottom: "6px" }}>
+                <div className="color-picker-row">
                   {PRESET_COLORS.map(c => (
-                    <div key={c} onClick={() => setNewForm(f => ({ ...f, color: c }))}
-                      style={{ width: "16px", height: "16px", borderRadius: "50%", background: c, cursor: "pointer", outline: newForm.color === c ? "2px solid #fff" : "none", outlineOffset: "1px" }} />
+                    <div 
+                      key={c} 
+                      onClick={() => setNewForm(f => ({ ...f, color: c }))}
+                      className={`color-swatch ${newForm.color === c ? "selected" : ""}`}
+                      style={{ backgroundColor: c }}
+                    />
                   ))}
                 </div>
-                <textarea value={newForm.prompt} onChange={e => setNewForm(f => ({ ...f, prompt: e.target.value }))}
-                  placeholder="Describe this reviewer's perspective and what they focus on…"
-                  style={{ ...inputStyle, minHeight: "70px", resize: "vertical", lineHeight: "1.5", marginBottom: "6px" }} />
-                <div style={{ display: "flex", gap: "6px" }}>
-                  <button onClick={saveNew} style={{ flex: 1, padding: "7px", background: "#efefef", color: "#0f0f0f", border: "none", borderRadius: "3px", fontSize: "10px", fontFamily: "monospace", cursor: "pointer" }}>save</button>
-                  <button onClick={() => setAddingNew(false)} style={{ flex: 1, padding: "7px", background: "none", border: "1px solid #222", borderRadius: "3px", color: "#444", fontSize: "10px", fontFamily: "monospace", cursor: "pointer" }}>cancel</button>
+                <textarea 
+                  value={newForm.prompt} 
+                  onChange={e => setNewForm(f => ({ ...f, prompt: e.target.value }))}
+                  placeholder="Describe this reviewer's perspective…"
+                  className="text-input"
+                  style={{ minHeight: "70px", marginBottom: "8px" }}
+                />
+                <div className="form-buttons">
+                  <button onClick={saveNew} className="btn btn-primary" style={{ fontSize: "11px" }}>save</button>
+                  <button onClick={() => setAddingNew(false)} className="btn btn-secondary" style={{ fontSize: "11px" }}>cancel</button>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Right Column: Review Output */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-
+        {/* Right Content Area */}
+        <div className="content-area">
+          {/* Review Tabs */}
           {Object.keys(reviews).length > 0 && (
-            <div style={{ display: "flex", borderBottom: "1px solid #1c1c1c", overflowX: "auto", background: "#0f0f0f", flexShrink: 0 }}>
+            <div className="tabs-bar">
               {personas.filter(p => reviews[p.id]).map(p => (
-                <button key={p.id} onClick={() => setActiveTab(p.id)}
+                <button 
+                  key={p.id} 
+                  onClick={() => setActiveTab(p.id)}
+                  className={`tab ${activeTab === p.id ? "active" : ""}`}
                   style={{
-                    padding: "12px 18px", background: "none", border: "none",
-                    borderBottom: `2px solid ${activeTab === p.id ? p.color : "transparent"}`,
-                    color: activeTab === p.id ? "#f0f0f0" : "#444", cursor: "pointer", fontSize: "11px",
-                    fontFamily: "monospace", whiteSpace: "nowrap", transition: "all 0.15s",
-                  }}>
+                    borderBottomColor: activeTab === p.id ? p.color : undefined,
+                  }}
+                >
                   {p.emoji} {p.name}
                 </button>
               ))}
             </div>
           )}
 
-          <div style={{ flex: 1, overflowY: "auto", padding: "28px 36px" }}>
+          {/* Main Content */}
+          <div className="content-main">
             {!hasDoc && (
-              <div style={{ textAlign: "center", paddingTop: "80px", color: "#2a2a2a" }}>
-                <div style={{ fontSize: "32px", marginBottom: "16px" }}>📄</div>
-                <div style={{ fontSize: "12px", fontFamily: "monospace", letterSpacing: "1px" }}>upload or paste a document to begin</div>
+              <div className="empty-state">
+                <div className="empty-state-icon">📄</div>
+                <div className="empty-state-text">upload or paste a document to begin</div>
               </div>
             )}
 
             {hasDoc && Object.keys(reviews).length === 0 && !runningAll && (
-              <div style={{ textAlign: "center", paddingTop: "80px", color: "#2a2a2a" }}>
-                <div style={{ fontSize: "32px", marginBottom: "16px" }}>👥</div>
-                <div style={{ fontSize: "12px", fontFamily: "monospace", letterSpacing: "1px" }}>run all reviewers or pick one from the left</div>
+              <div className="empty-state">
+                <div className="empty-state-icon">👥</div>
+                <div className="empty-state-text">run all reviewers or pick one from the left</div>
               </div>
             )}
 
             {runningAll && Object.keys(reviews).length === 0 && (
-              <div style={{ textAlign: "center", paddingTop: "80px", color: "#333" }}>
-                <div style={{ fontSize: "12px", fontFamily: "monospace", letterSpacing: "1px", animation: "pulse 1.5s infinite" }}>the panel is reviewing your document…</div>
+              <div className="loading-state">
+                <div className="loading-text">the panel is reviewing your document…</div>
               </div>
             )}
 
             {activePersona && reviews[activePersona.id] && (
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px" }}>
-                  <span style={{ fontSize: "22px" }}>{activePersona.emoji}</span>
+              <div className="review-result">
+                <div className="review-header">
+                  <span className="review-emoji">{activePersona.emoji}</span>
                   <div>
-                    <div style={{ fontSize: "16px", color: "#f0f0f0", fontWeight: "400" }}>{activePersona.name}</div>
-                    <div style={{ fontSize: "10px", color: activePersona.color, fontFamily: "monospace", marginTop: "2px" }}>review complete</div>
+                    <div className="review-title">{activePersona.name}</div>
+                    <div className="review-status" style={{ color: activePersona.color }}>review complete</div>
                   </div>
                 </div>
-                <div style={{ fontSize: "14px", lineHeight: "1.8", color: "#bbb", whiteSpace: "pre-wrap" }}>
+                <div className="review-body">
                   {reviews[activePersona.id]}
                 </div>
               </div>
             )}
 
             {activeTab && loading[activeTab] && !reviews[activeTab] && (
-              <div style={{ textAlign: "center", paddingTop: "60px", color: "#333" }}>
-                <div style={{ fontSize: "11px", fontFamily: "monospace", animation: "pulse 1.5s infinite" }}>
+              <div className="loading-state">
+                <div className="loading-text">
                   {activePersona?.emoji} {activePersona?.name} is reviewing…
                 </div>
               </div>
@@ -785,35 +810,46 @@ export default function ThePanel() {
 
       {/* Edit Modal */}
       {editingId && (
-        <div style={{ position: "fixed", inset: 0, background: "#000000cc", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ background: "#111", border: "1px solid #222", borderRadius: "4px", padding: "24px", width: "360px" }}>
-            <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", fontFamily: "monospace", marginBottom: "14px", textTransform: "uppercase" }}>Edit Reviewer</div>
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-title">Edit Reviewer</div>
             <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
-              <input value={editForm.emoji} onChange={e => setEditForm(f => ({ ...f, emoji: e.target.value }))} style={{ ...inputStyle, width: "44px", textAlign: "center" }} />
-              <input value={editForm.name} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))} style={{ ...inputStyle, flex: 1 }} placeholder="Name" />
+              <input 
+                value={editForm.emoji} 
+                onChange={e => setEditForm(f => ({ ...f, emoji: e.target.value }))} 
+                className="text-input"
+                style={{ width: "50px", textAlign: "center" }}
+              />
+              <input 
+                value={editForm.name} 
+                onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))} 
+                className="text-input"
+                placeholder="Name" 
+              />
             </div>
-            <div style={{ display: "flex", gap: "4px", marginBottom: "10px" }}>
+            <div className="color-picker-row" style={{ marginBottom: "10px" }}>
               {PRESET_COLORS.map(c => (
-                <div key={c} onClick={() => setEditForm(f => ({ ...f, color: c }))}
-                  style={{ width: "18px", height: "18px", borderRadius: "50%", background: c, cursor: "pointer", outline: editForm.color === c ? "2px solid #fff" : "none", outlineOffset: "1px" }} />
+                <div 
+                  key={c} 
+                  onClick={() => setEditForm(f => ({ ...f, color: c }))}
+                  className={`color-swatch ${editForm.color === c ? "selected" : ""}`}
+                  style={{ backgroundColor: c }}
+                />
               ))}
             </div>
-            <textarea value={editForm.prompt} onChange={e => setEditForm(f => ({ ...f, prompt: e.target.value }))}
-              style={{ ...inputStyle, minHeight: "100px", resize: "vertical", lineHeight: "1.5", marginBottom: "12px" }} />
-            <div style={{ display: "flex", gap: "8px" }}>
-              <button onClick={saveEdit} style={{ flex: 1, padding: "9px", background: "#efefef", color: "#0f0f0f", border: "none", borderRadius: "3px", fontSize: "11px", fontFamily: "monospace", cursor: "pointer" }}>save</button>
-              <button onClick={() => setEditingId(null)} style={{ flex: 1, padding: "9px", background: "none", border: "1px solid #222", borderRadius: "3px", color: "#555", fontSize: "11px", fontFamily: "monospace", cursor: "pointer" }}>cancel</button>
+            <textarea 
+              value={editForm.prompt} 
+              onChange={e => setEditForm(f => ({ ...f, prompt: e.target.value }))}
+              className="text-input"
+              style={{ minHeight: "100px", marginBottom: "12px" }}
+            />
+            <div className="modal-buttons">
+              <button onClick={saveEdit} className="btn btn-primary" style={{ fontSize: "11px" }}>save</button>
+              <button onClick={() => setEditingId(null)} className="btn btn-secondary" style={{ fontSize: "11px" }}>cancel</button>
             </div>
           </div>
         </div>
       )}
-
-      <style>{`
-        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
-      `}</style>
     </div>
   );
 }
