@@ -39,6 +39,28 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
+## Model Provider Setup
+
+This app supports automatic failover across multiple providers:
+
+1. Azure OpenAI
+2. OpenAI
+3. GitHub Models
+
+Use [.env.example](.env.example) as your template and configure whichever providers you have available.
+
+Startup steps:
+
+1. Copy `.env.example` to `.env`
+2. Fill in credentials for at least one provider
+3. Optionally set `REACT_APP_MODEL_PROVIDER_PRIORITY`
+4. Restart `npm start` after changing environment values
+
+Notes:
+
+1. The app will try providers in priority order and automatically fall back.
+2. If all configured providers are unavailable, the app uses offline fallback reviews.
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
