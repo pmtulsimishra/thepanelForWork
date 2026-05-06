@@ -61,6 +61,29 @@ Notes:
 1. The app will try providers in priority order and automatically fall back.
 2. If all configured providers are unavailable, the app uses offline fallback reviews.
 
+## GitHub Pages Deployment
+
+The app is automatically deployed to GitHub Pages on every push to the master branch.
+
+**Live URL:** https://tulsi-mishra_hpeprod.github.io/thePanel/
+
+### Manual Deployment
+
+To deploy locally (requires git authentication):
+
+```bash
+npm run deploy
+```
+
+### Automatic Deployment
+
+A GitHub Actions workflow automatically:
+- Runs tests
+- Builds the production bundle
+- Deploys to GitHub Pages
+
+The workflow triggers on every push to the `master` branch. View deployment status in the repository's "Actions" tab.
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
