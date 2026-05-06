@@ -61,28 +61,26 @@ Notes:
 1. The app will try providers in priority order and automatically fall back.
 2. If all configured providers are unavailable, the app uses offline fallback reviews.
 
-## GitHub Pages Deployment
+## Netlify Deployment
 
-The app is automatically deployed to GitHub Pages on every push to the master branch.
+Use Netlify instead of GitHub Pages.
 
-**Live URL:** https://tulsi-mishra_hpeprod.github.io/thePanel/
+### Option 1: Fastest (Drag-and-Drop)
 
-### Manual Deployment
+1. Run `npm run build`
+2. Open https://app.netlify.com/drop
+3. Drag the `build` folder and drop it on the page
 
-To deploy locally (requires git authentication):
+### Option 2: Git-Connected Auto Deploy
 
-```bash
-npm run deploy
-```
+1. In Netlify, click "Add new site" > "Import an existing project"
+2. Connect this GitHub repository
+3. Use these build settings:
+	- Build command: `npm run build`
+	- Publish directory: `build`
+4. Add environment variables in Netlify Site Settings for any `REACT_APP_*` keys you use
 
-### Automatic Deployment
-
-A GitHub Actions workflow automatically:
-- Runs tests
-- Builds the production bundle
-- Deploys to GitHub Pages
-
-The workflow triggers on every push to the `master` branch. View deployment status in the repository's "Actions" tab.
+This repo includes `netlify.toml` and `public/_redirects` for SPA routing support.
 
 ## Learn More
 
