@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/thepanelForWork/static/css/main.b006d3f0.css",
+    "main.js": "/thepanelForWork/static/js/main.6e11a87e.js",
+    "static/js/981.323a4f87.chunk.js": "/thepanelForWork/static/js/981.323a4f87.chunk.js",
+    "static/js/453.d9fad54e.chunk.js": "/thepanelForWork/static/js/453.d9fad54e.chunk.js",
+    "index.html": "/thepanelForWork/index.html",
+    "main.b006d3f0.css.map": "/thepanelForWork/static/css/main.b006d3f0.css.map",
+    "main.6e11a87e.js.map": "/thepanelForWork/static/js/main.6e11a87e.js.map",
+    "981.323a4f87.chunk.js.map": "/thepanelForWork/static/js/981.323a4f87.chunk.js.map",
+    "453.d9fad54e.chunk.js.map": "/thepanelForWork/static/js/453.d9fad54e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b006d3f0.css",
+    "static/js/main.6e11a87e.js"
+  ]
+}
